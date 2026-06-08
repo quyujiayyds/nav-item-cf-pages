@@ -1,203 +1,265 @@
-# Nav-item - 个人导航站
+# Nav-Item Cloudflare Pages 版
 
-## 项目简介
+这是基于 [`eooce/nav-item`](https://github.com/eooce/nav-item) 改造的 Cloudflare Pages 版本。
 
-一个现代化的导航网站项目，提供简洁美观的导航界面和强大的后台管理系统,快速访问常用网站和工具。
+原项目是 **Vue 3 + Express + SQLite**。本仓库已经转换为：
 
-## 🛠️ 技术栈
-- Vue 3 + Node.js + SQLite 前后端分离架构
+- 前端：Vue 3 + Vite，部署到 **Cloudflare Pages 静态资源**
+- 后端 API：**Cloudflare Pages Functions**，路径为 `/api/*`
+- 数据库：**Cloudflare D1**
+- 后台管理：`/admin`
 
-## ✨ 主要功能
+已去掉原来的 Node/Express 运行依赖，Cloudflare Pages 上可直接部署。
 
-### 前端功能
-- 🏠 **首页导航**：美观的卡片式导航界面
-- 🔍 **聚合搜索**：支持 Google、百度、Bing、GitHub、站内搜索
-- 📱 **响应式设计**：完美适配桌面端和移动端
-- 🎨 **现代化UI**：采用渐变背景和毛玻璃效果
-- 🔗 **友情链接**：支持友情链接展示
-- 📢 **广告位**：支持左右两侧广告位展示
+## 在线效果
 
-### 后台管理功能
-- 👤 **用户管理**：管理员登录、用户信息管理
-- 📋 **栏目管理**：主菜单和子菜单的增删改查
-- 🃏 **卡片管理**：导航卡片的增删改查
-- 📢 **广告管理**：广告位的增删改查
-- 🔗 **友链管理**：友情链接的增删改查
-- 📊 **数据统计**：登录时间、IP等统计信息
+- Pages 地址：`https://nav-item-cf.pages.dev`
+- 后台地址：`https://nav-item-cf.pages.dev/admin`
 
-### 技术特性
-- 🔐 **JWT认证**：安全的用户认证机制
-- 🗄️ **SQLite数据库**：轻量级数据库，无需额外配置
-- 📤 **文件上传**：支持图片上传功能
-- 🔍 **搜索功能**：支持站内搜索和外部搜索
-- 📱 **移动端适配**：完美的移动端体验
+默认后台账号：
 
-## 🏗️ 项目结构
+- 用户名：`admin`
+- 密码：`123456`
 
-```
-nav-item/
-├── app.js                 # 后端主入口文件
-├── config.js             # 配置文件
-├── db.js                 # 数据库初始化
-├── package.json          # 后端依赖配置
-├── database/             # 数据库文件目录
-│   └── nav.db           # SQLite数据库文件
-├── routes/               # 后端路由
-│   ├── auth.js          # 认证相关路由
-│   ├── menu.js          # 菜单管理路由
-│   ├── card.js          # 卡片管理路由
-│   ├── ad.js            # 广告管理路由
-│   ├── friend.js        # 友链管理路由
-│   ├── user.js          # 用户管理路由
-│   └── upload.js        # 文件上传路由
-├── uploads/              # 上传文件目录
-│   └── default-favicon.png
-├── web/                  # 前端项目目录
-│    ├── package.json      # 前端依赖配置
-│    ├── vite.config.mjs   # Vite配置文件
-│    ├── index.html        # HTML入口文件
-│    ├── public/           # 静态资源
-│    │   ├── background.webp
-│    │   ├── default-favicon.png
-│    │   └── robots.txt
-│    └── src/              # 前端源码
-│        ├── main.js       # Vue应用入口
-│        ├── router.js     # 路由配置
-│        ├── api.js        # API接口封装
-│        ├── App.vue       # 根组件
-│        ├── components/   # 公共组件
-│        │   ├── MenuBar.vue
-│        │   └── CardGrid.vue
-│        └── views/        # 页面组件
-│            ├── Home.vue  # 首页
-│            ├── Admin.vue # 后台管理
-│            └── admin/    # 后台管理子页面
-│                ├── MenuManage.vue
-│                ├── CardManage.vue
-│               ├── AdManage.vue
-│               ├── FriendLinkManage.vue
-│               └── UserManage.vue
-├── Dockerfile # Docker构建文件
+> 部署后建议第一时间进入后台修改默认密码。
+
+## 功能
+
+### 前台
+
+- 导航卡片展示
+- 主菜单 / 子菜单分类
+- 聚合搜索
+- 响应式布局
+- 左右广告位展示
+- 底部版权：`Copyright © Nav-Item | Powered by one`
+
+### 后台
+
+- 登录认证
+- 栏目管理
+- 子菜单管理
+- 卡片管理
+- 广告管理
+- 友链管理
+- 用户密码修改
+- 数据导出 / 导入
+
+### 数据导出 / 导入
+
+后台新增 **数据管理** 页面：
+
+- 支持导出 JSON 备份
+- 支持导入 JSON 恢复
+- 导入会覆盖：菜单、子菜单、卡片、广告、友链
+- 导入不会覆盖：后台用户和密码
+
+## 项目结构
+
+```text
+nav-item-cf-pages/
+├── functions/
+│   └── api/
+│       └── [[path]].js          # Cloudflare Pages Functions API
+├── migrations/
+│   └── 0001_schema_and_seed.sql # D1 数据库结构和默认数据
+├── scripts/
+│   └── generate-migration.mjs   # 从原始 db.js 生成迁移文件的辅助脚本
+├── web/                         # Vue 3 前端
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.mjs
+├── worker/                      # Worker 版本入口，保留作参考
+├── wrangler.toml                # Cloudflare 配置
+├── package.json                 # 根目录脚本和 wrangler 依赖
+└── README.md
 ```
 
-## ⚙️ 环境变量及配置说明
+## Cloudflare Pages 部署说明
 
-### 环境变量
-- `PORT`: 服务器端口号（默认: 3000）
-- `ADMIN_USERNAME`: 管理员用户名（默认: admin）
-- `ADMIN_PASSWORD`: 管理员密码（默认: 123456）
+### 1. Fork 或导入仓库
 
-### 数据库配置
-系统使用 SQLite 数据库，数据库文件会自动创建在项目/database/目录下，使用docker部署请挂载/app/database目录实现数据持久化
+将本仓库导入到你自己的 GitHub：
+
+```text
+https://github.com/saodisengyyds/nav-item-cf-pages
 ```
 
-## 🚀 部署指南
+### 2. 创建 D1 数据库
 
-### 源代码部署
+本地安装依赖：
 
-#### 1. 克隆项目
-```bash
-git clone https://github.com/eooce/nav-Item.git
-cd nav-item
-```
-
-#### 2. 安装后端依赖
 ```bash
 npm install
 ```
 
-#### 3. 构建前端
+登录 Cloudflare：
+
 ```bash
+npx wrangler login
+```
+
+创建 D1：
+
+```bash
+npx wrangler d1 create nav-item-db
+```
+
+命令会输出类似：
+
+```toml
+[[d1_databases]]
+binding = "DB"
+database_name = "nav-item-db"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+```
+
+把 `database_id` 填入 `wrangler.toml`。
+
+### 3. 初始化 D1 数据
+
+```bash
+npx wrangler d1 migrations apply nav-item-db --remote
+```
+
+这会创建表并导入默认菜单、子菜单和卡片数据。
+
+### 4. 在 Cloudflare Pages 创建项目
+
+Cloudflare Dashboard：
+
+```text
+Workers & Pages → Create application → Pages → Connect to Git
+```
+
+选择 GitHub 仓库后，构建配置填写：
+
+| 配置项 | 值 |
+| --- | --- |
+| Framework preset | `None` 或 `Vue` |
+| Build command | `cd web && npm install && npm run build` |
+| Build output directory | `web/dist` |
+| Root directory | 留空 |
+
+### 5. 绑定 D1 数据库
+
+在 Pages 项目设置里：
+
+```text
+Settings → Functions → D1 database bindings
+```
+
+添加绑定：
+
+| Binding name | D1 database |
+| --- | --- |
+| `DB` | `nav-item-db` |
+
+### 6. 设置环境变量
+
+在 Pages 项目设置里：
+
+```text
+Settings → Environment variables
+```
+
+Production 和 Preview 都建议设置：
+
+| 变量名 | 示例值 | 说明 |
+| --- | --- | --- |
+| `ADMIN_USERNAME` | `admin` | 初始管理员用户名 |
+| `ADMIN_PASSWORD` | `123456` | 初始管理员密码 |
+| `JWT_SECRET` | `请改成强随机字符串` | JWT 签名密钥 |
+
+> 如果已经登录后台修改过密码，`ADMIN_PASSWORD` 只用于首次初始化默认用户，不会覆盖已有用户密码。
+
+### 7. 重新部署
+
+保存绑定和环境变量后，在 Pages 项目里触发一次重新部署：
+
+```text
+Deployments → Retry deployment
+```
+
+部署完成后访问：
+
+```text
+https://你的项目名.pages.dev
+https://你的项目名.pages.dev/admin
+```
+
+## 使用 Wrangler 直接部署 Pages
+
+如果不想通过 GitHub 自动构建，也可以本地直接部署：
+
+```bash
+npm install
 cd web && npm install && npm run build
+cd ..
+npx wrangler pages project create nav-item-cf --production-branch main --compatibility-date=2025-01-01 --compatibility-flag=nodejs_compat
+npx wrangler pages deploy web/dist --project-name nav-item-cf
 ```
 
-#### 4. 启动后端服务
-```bash
-# 在项目根目录
-cd .. && npm start
-```
+注意：直接部署后仍需要确认 Pages 项目里已经有：
 
-#### 6. 访问应用
-- 前端地址：http://localhost:3000
-- 后台管理：http://localhost:3000/admin
-- 默认管理员账号：admin / 123456
+- D1 binding：`DB`
+- 环境变量：`ADMIN_USERNAME`、`ADMIN_PASSWORD`、`JWT_SECRET`
 
-### Docker 部署
+## 本地开发
 
-#### 1：docker快速部署
-   ```bash
-   docker run -d \
-     --name nav-item \
-     -p 3000:3000 \
-     -v $(pwd)/database:/app/database \
-     -v $(pwd)/uploads:/app/uploads \
-     -e NODE_ENV=production \
-     -e ADMIN_USERNAME=admin \
-     -e ADMIN_PASSWORD=123456 \
-     eooce/nav-item
-   ```
-### 2: docker-compose.yaml 部署
-```bash
-version: '3'
-
-services:
-  nav-item:
-    image: eooce/nav-item
-    container_name: nav-item
-    ports:
-      - "3000:3000"
-    environment:
-      - PORT=3000             # 监听端口
-      - ADMIN_USERNAME=admin  # 后台用户名
-      - ADMIN_PASSWORD=123456 # 后台密码
-    volumes:
-      - ./database:/app/database  # 持久化数据库
-    restart: unless-stopped
-```
-### 3: docker容器等使用docker image配合环境变量部署
-```bash
-eooce/nav-item
-```
-或
-```bash
-ghcr.io/eooce/nav-item:latest
-```
-
-## serv00|ct8|Hostuno 一键安装脚本
-- 环境变量,放在脚本前，随脚本一起运行，英文空隔隔开
-- 后台管理用户名和密码默认分别为为`admin`和`123456`
-  * `DOMAIN`为自定义站点域名
+初始化本地 D1：
 
 ```bash
-bash <(curl -Ls https://github.com/eooce/nav-item/releases/download/ct8-and-serv00/install.sh) 
+npx wrangler d1 migrations apply nav-item-db --local
 ```
 
-## 🤝 贡献指南
+启动本地 Pages：
 
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开 Pull Request
+```bash
+npm run pages:dev
+```
 
-## 📄 许可证
+默认地址：
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+```text
+http://localhost:8788
+```
 
-## 👨‍💻 作者
+## 常用命令
 
-**eooce** - [GitHub](https://github.com/eooce)
+```bash
+# 构建前端
+npm run web:build
 
-## 🙏 致谢
+# 本地 Pages dev
+npm run pages:dev
 
-感谢所有为这个项目做出贡献的开发者！
+# 直接部署 Pages
+npm run pages:deploy
 
----
+# 应用远程 D1 迁移
+npx wrangler d1 migrations apply nav-item-db --remote
+```
 
-⭐ 如果这个项目对你有帮助，请给它一个星标！ 
+## 和原版的区别
 
+| 原版 | 当前版本 |
+| --- | --- |
+| Express API | Cloudflare Pages Functions |
+| SQLite 本地文件 | Cloudflare D1 |
+| 本地 uploads 目录 | 小图片上传转 data URL 存储 |
+| Docker / Node 服务部署 | Cloudflare Pages 部署 |
+| 需要服务器常驻进程 | 无服务器部署 |
 
+## 注意事项
 
+1. Cloudflare D1 免费额度有限，大量数据或高并发请关注 Cloudflare 用量。
+2. 当前上传 logo 会转为 data URL 存储，建议只上传小图标。
+3. 如果需要大文件图片上传，建议后续接入 Cloudflare R2。
+4. 首次部署后请立即修改默认后台密码。
+5. `JWT_SECRET` 请使用强随机字符串，不要使用默认值。
 
+## License
 
-
+MIT
