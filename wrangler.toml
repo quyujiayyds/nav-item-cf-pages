@@ -1,0 +1,14 @@
+name = "nav-item-cf"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "web/dist"
+
+[vars]
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "123456"
+JWT_SECRET = "nav-item-cf-worker-jwt-secret-change-me"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "nav-item-db"
+database_id = "beff5edd-0c4d-44c5-91d5-04f175a9d118"
